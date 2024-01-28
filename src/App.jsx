@@ -1,10 +1,16 @@
 import { useState } from "react";
+import Header from "./components/Header";
+import { saveAs } from 'file-saver';
 import "./app.css";
+
 function App() {
   const [xPos, setXpos] = useState("");
   const [yPos, setYpos] = useState("");
   const [row, setRow] = useState("");
   const [col, setCol] = useState("");
+
+  // text area value
+  const [textareaValue, setTextareaValue] = useState('');
 
   const calculateCord = (e) => {
     setXpos(`X: ${e.clientX}`);
@@ -15,6 +21,8 @@ function App() {
     let content = e.target.value;
     let createPos = e.target.selectionStart;
 
+    setTextareaValue(e.target.value);
+
     let lineNumber =
       (content.substring(0, createPos).match(/\n/g) || []).length + 1;
     let columnNumber = createPos - content.lastIndexOf("\n", createPos - 1);
@@ -23,61 +31,18 @@ function App() {
     setCol(`Col: ${columnNumber}`);
   };
 
+// file system
+ 
+
+  const saveToFile = () => {
+    const blob = new Blob([textareaValue], { type: 'text/plain;charset=utf-8' });
+    saveAs(blob, 'Untitled.txt');
+  };
+
   return (
     <>
       <section>
-        <header>
-          <nav>
-            <ul>
-              <li>
-                <a href="#">File</a>
-                <ul className="inner-list">
-                  <li>
-                    <a href="#">New</a>
-                  </li>
-                  <li>
-                    <a href="#">Open</a>
-                  </li>
-                  <li>
-                    <a href="/saveFile">Save</a>
-                  </li>
-                  <li>
-                    <a href="#">Exit</a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a href="#">Edit</a>
-                <ul className="inner-list">
-                  <li>
-                    <a href="#">Cut</a>
-                  </li>
-                  <li>
-                    <a href="#">Copy</a>
-                  </li>
-                  <li>
-                    <a href="#">Pest</a>
-                  </li>
-                  <li>
-                    <a href="#">Delete</a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a href="#">Help</a>
-              </li>
-            </ul>
-          </nav>
-          <div className="setting">
-            <span>
-              <i className="fa-solid fa-gear"></i>
-            </span>
-            {/* <span className="dark-mode" id="dark-lite">
-            <i className="fa-regular fa-moon moon"></i>
-            <i className="fa-solid fa-sun sun"></i>
-          </span>  */}
-          </div>
-        </header>
+        <Header save={saveToFile}/>
         <div className="text-area-container">
           <textarea
             name="textarea"
